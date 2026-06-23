@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body class="dark-theme">
+
+  <!-- ── Background atmosphere ── -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="app-wrapper">
+
+    <!-- ── Header ── -->
+    <header class="site-header">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">◈</span>
+        <span class="brand-name">Weatherly</span>
+      </div>
+
+      <div class="header-controls">
+        <!-- Unit toggle -->
+        <div class="unit-toggle" role="group" aria-label="Temperature unit">
+          <button class="unit-btn active" id="btn-celsius" data-unit="C" title="Celsius">°C</button>
+          <button class="unit-btn" id="btn-fahrenheit" data-unit="F" title="Fahrenheit">°F</button>
+        </div>
+
+        <!-- Theme toggle -->
+        <button class="theme-btn" id="theme-toggle" title="Toggle light/dark theme" aria-label="Toggle theme">
+          <span class="theme-icon">☽</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Search ── -->
+    <section class="search-section" aria-label="City search">
+      <div class="search-bar" role="search">
+        <span class="search-prefix" aria-hidden="true">⌕</span>
+        <input
+          type="text"
+          id="city-input"
+          class="search-input"
+          placeholder="Enter city name…"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="City name"
+          maxlength="100"
+        />
+        <button class="search-btn" id="search-btn" aria-label="Search weather">
+          <span class="btn-label">Search</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- Geolocation -->
+      <button class="geo-btn" id="geo-btn" title="Use my location">
+        <span aria-hidden="true">⊕</span> Use my location
+      </button>
+
+      <!-- Recent searches -->
+      <div class="recent-searches" id="recent-searches" aria-label="Recent searches" hidden>
+        <span class="recent-label">Recent:</span>
+        <div class="recent-chips" id="recent-chips"></div>
+        <button class="clear-recent" id="clear-recent" aria-label="Clear recent searches">Clear</button>
+      </div>
+    </section>
+
+    <!-- ── Error Banner ── -->
+    <div class="error-banner" id="error-banner" role="alert" aria-live="polite" hidden>
+      <span class="error-icon" aria-hidden="true">⚠</span>
+      <span class="error-text" id="error-text"></span>
+    </div>
+
+    <!-- ── Loading skeleton ── -->
+    <div class="skeleton-grid" id="skeleton" aria-label="Loading weather data" aria-busy="true" hidden>
+      <div class="skeleton-hero">
+        <div class="skel skel-title"></div>
+        <div class="skel skel-temp"></div>
+        <div class="skel skel-sub"></div>
+      </div>
+      <div class="skeleton-cards">
+        <div class="skel skel-card"></div>
+        <div class="skel skel-card"></div>
+        <div class="skel skel-card"></div>
+        <div class="skel skel-card"></div>
+        <div class="skel skel-card"></div>
+        <div class="skel skel-card"></div>
+      </div>
+    </div>
+
+    <!-- ── Weather Dashboard ── -->
+    <main class="dashboard" id="dashboard" hidden aria-label="Weather information">
+
+      <!-- Hero card -->
+      <section class="hero-card glass-card" aria-label="Current conditions">
+        <div class="hero-left">
+          <div class="city-meta">
+            <h1 class="city-name" id="city-name">—</h1>
+            <span class="country-flag" id="country-flag"></span>
+          </div>
+          <p class="city-date" id="city-date">—</p>
+          <p class="city-time" id="city-time">—</p>
+
+          <div class="condition-row">
+            <div class="weather-icon-wrap" id="weather-icon-wrap">
+              <span class="weather-icon animated-icon" id="weather-icon" aria-hidden="true"></span>
+            </div>
+            <div class="condition-text">
+              <p class="condition-main" id="condition-main">—</p>
+              <p class="condition-desc" id="condition-desc">—</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="temp-display">
+            <span class="temp-value" id="temp-value">—</span>
+            <span class="temp-unit" id="temp-unit">°C</span>
+          </div>
+          <p class="feels-like">
+            Feels like <span id="feels-like">—</span>
+          </p>
+
+          <!-- Mini bar -->
+          <div class="temp-bar-wrap" aria-label="Temperature range">
+            <span class="temp-bar-label" id="temp-min">—</span>
+            <div class="temp-bar">
+              <div class="temp-bar-fill" id="temp-bar-fill"></div>
+            </div>
+            <span class="temp-bar-label" id="temp-max">—</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Metrics grid -->
+      <section class="metrics-grid" aria-label="Weather metrics">
+
+        <article class="metric-card glass-card" aria-label="Humidity">
+          <div class="metric-icon" aria-hidden="true">💧</div>
+          <div class="metric-body">
+            <p class="metric-label">Humidity</p>
+            <p class="metric-value" id="humidity">—</p>
+          </div>
+          <div class="metric-bar-wrap">
+            <div class="metric-bar">
+              <div class="metric-bar-fill" id="humidity-bar" style="width:0%"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="metric-card glass-card" aria-label="Wind speed">
+          <div class="metric-icon" aria-hidden="true">🌬</div>
+          <div class="metric-body">
+            <p class="metric-label">Wind Speed</p>
+            <p class="metric-value" id="wind-speed">—</p>
+          </div>
+        </article>
+
+        <article class="metric-card glass-card" aria-label="Atmospheric pressure">
+          <div class="metric-icon" aria-hidden="true">⬡</div>
+          <div class="metric-body">
+            <p class="metric-label">Pressure</p>
+            <p class="metric-value" id="pressure">—</p>
+          </div>
+        </article>
+
+        <article class="metric-card glass-card" aria-label="Visibility">
+          <div class="metric-icon" aria-hidden="true">◎</div>
+          <div class="metric-body">
+            <p class="metric-label">Visibility</p>
+            <p class="metric-value" id="visibility">—</p>
+          </div>
+        </article>
+
+        <article class="metric-card glass-card" aria-label="Sunrise time">
+          <div class="metric-icon" aria-hidden="true">🌅</div>
+          <div class="metric-body">
+            <p class="metric-label">Sunrise</p>
+            <p class="metric-value metric-mono" id="sunrise">—</p>
+          </div>
+        </article>
+
+        <article class="metric-card glass-card" aria-label="Sunset time">
+          <div class="metric-icon" aria-hidden="true">🌇</div>
+          <div class="metric-body">
+            <p class="metric-label">Sunset</p>
+            <p class="metric-value metric-mono" id="sunset">—</p>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- Refresh info -->
+      <footer class="dashboard-footer">
+        <span class="refresh-info" id="refresh-info">—</span>
+        <button class="refresh-btn" id="refresh-btn" title="Refresh now" aria-label="Refresh weather data">
+          ↻ Refresh
+        </button>
+      </footer>
+
+    </main>
+
+    <!-- ── Empty state ── -->
+    <div class="empty-state" id="empty-state" aria-label="Start screen">
+      <div class="empty-icon" aria-hidden="true">⛅</div>
+      <h2 class="empty-title">What's it like out there?</h2>
+      <p class="empty-sub">Search any city to see live conditions.</p>
+    </div>
+
+  </div><!-- /app-wrapper -->
+
+  <script src="script.js"></script>
+</body>
+</html>
